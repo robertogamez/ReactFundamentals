@@ -5,9 +5,18 @@ import AuthorQuiz from './AuthorQuiz';
 import * as serviceWorker from './serviceWorker';
 
 import Sum from './Sum';
+import Clicker from './Clicker';
 
-ReactDOM.render(<Sum a={ 1 } b={ 2 } />,
+const props = {
+    a: 4,
+    b: 2
+};
+
+ReactDOM.render(<Clicker handleClick={(letter) => { console.log(`${letter} clicked`) }} />,
     document.getElementById('root'));
+
+// ReactDOM.render(<Sum {...props} />,
+//     document.getElementById('root'));
 
 // ReactDOM.render(<AuthorQuiz />, document.getElementById('root'));
 
