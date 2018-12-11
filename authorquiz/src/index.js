@@ -11,19 +11,48 @@ import ConditionalDisplay from './Examples/ConditionalDisplay';
 
 const authors = [
     {
-        name: 'Robert G',
-        imageUrl: 'images/authors/marktwain.jpg',
-        imageSource: 'Wikimedia Commons',
-        books: [
-            'The adventures of Huckleberry Finn',
-            'Book 2',
-            'Book 3'
-        ]
+      name: 'Mark Twain',
+      imageUrl: 'images/authors/marktwain.jpg',
+      imageSource: 'Wikimedia Commons',
+      books: ['The Adventures of Huckleberry Finn']
+    },
+    {
+      name: 'Joseph Conrad',
+      imageUrl: 'images/authors/josephconrad.png',
+      imageSource: 'Wikimedia Commons',
+      books: ['Heart of Darkness']
+    },
+    {
+      name: 'J.K. Rowling',
+      imageUrl: 'images/authors/jkrowling.jpg',
+      imageSource: 'Wikimedia Commons',
+      imageAttribution: 'Daniel Ogren',
+      books: ['Harry Potter and the Sorcerers Stone']
+    },
+    {
+      name: 'Stephen King',
+      imageUrl: 'images/authors/stephenking.jpg',
+      imageSource: 'Wikimedia Commons',
+      imageAttribution: 'Pinguino',
+      books: ['The Shining', 'IT']
+    },
+    {
+      name: 'Charles Dickens',
+      imageUrl: 'images/authors/charlesdickens.jpg',
+      imageSource: 'Wikimedia Commons',
+      books: ['David Copperfield', 'A Tale of Two Cities']
+    },
+    {
+      name: 'William Shakespeare',
+      imageUrl: 'images/authors/williamshakespeare.jpg',
+      imageSource: 'Wikimedia Commons',
+      books: ['Hamlet', 'Macbeth', 'Romeo and Juliet']
     }
-];
+  ];
 
 const state = {
-    turnData: getTurnData(authors)
+    turnData: getTurnData(authors),
+    highlight: ''
 };
 
 function getTurnData(authors){
@@ -62,9 +91,19 @@ function getTurnData(authors){
 // ReactDOM.render(<Sum {...props} />,
 //     document.getElementById('root'));
 
-ReactDOM.render(<AuthorQuiz {...state} />,
-     document.getElementById('root'));
+function onAnswerSelected(answer){
+    const isCorrect = state.turnData.author.books.some((book) => book === answer);
+    state.highlight = isCorrect ? 'correct' : 'wrong';
 
+    render();
+}
+
+function render() {
+    ReactDOM.render(<AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} />,
+        document.getElementById('root'));
+}
+
+render();
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
