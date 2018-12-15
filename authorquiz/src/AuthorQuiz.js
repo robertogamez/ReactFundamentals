@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import './bootstrap.min.css';
 import PropTypes from 'prop-types'; 
+import { Link } from 'react-router-dom';
 
 function Hero() {
   return (
@@ -89,6 +90,9 @@ class AuthorQuiz extends Component {
         <Turn {...this.props.turnData} highlight={this.props.highlight} 
           onAnswerSelected={this.props.onAnswerSelected} />
         <Continue />
+        <p>
+          <Link to="/add">Add an author</Link>
+        </p>
         <Footer />
       </div>
     );
