@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import './bootstrap.min.css';
-import PropTypes from 'prop-types'; 
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types'; 
 
 function Hero() {
   return (
@@ -56,9 +56,20 @@ Turn.PropTypes = {
   highlight: PropTypes.string
 }
 
-function Continue() {
+function Continue({ show, onContinue }) {
   return (
-    <div></div>
+    <div className="row continue">
+      {
+        show
+        ? <div className="col-11">
+            <button className="btn btn-primary btn-lg float-right"
+              onClick={onContinue}>
+              Continue
+            </button>
+          </div>
+        : null
+      }
+    </div>
   );
 }
 
@@ -89,7 +100,9 @@ class AuthorQuiz extends Component {
         <Hero />
         <Turn {...this.props.turnData} highlight={this.props.highlight} 
           onAnswerSelected={this.props.onAnswerSelected} />
-        <Continue />
+        <Continue
+          show={this.props.highlight === 'correct'}
+          onContinue={this.props.onContinue} />
         <p>
           <Link to="/add">Add an author</Link>
         </p>
