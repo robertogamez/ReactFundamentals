@@ -6,6 +6,8 @@ import AddAuthorForm from './AddAuthorForm';
 import * as serviceWorker from './serviceWorker';
 import { shuffle, sample } from 'underscore';
 import { BrowserRouter, Route, withRouter } from 'react-router-dom';
+import * as Redux from 'redux';
+import * as ReactRedux from 'react-redux';
 
 import Sum from './Sum';
 import Clicker from './Clicker';
@@ -52,7 +54,31 @@ const authors = [
   }
 ];
 
-let state = resetState();
+function reducer(
+  state = { authors, turnData: getTurnData(authors), highlight: '' },
+  action
+) {
+
+  switch (action.type) {
+    case 'ANSWER_SELECTED':
+      const isCorrect =
+        state.turnData.author.books.some((book) => book === action.answer);
+      return Object.assign({}, state, {
+        highlight: isCorrect ? 'correct' : 'wrong'
+      });
+
+    case 'CONTINUE':
+      return Object.assign({}, state, {
+        highlight: '',
+        turnData: getTurnData(state.authors)
+      });
+
+    default:
+      return state;
+  }
+}
+
+let store = Redux.createStore(reducer);
 
 function getTurnData(authors) {
   const allBooks = authors.reduce(function (p, c, i) {
@@ -68,36 +94,7 @@ function getTurnData(authors) {
   };
 }
 
-// const props = {
-//     a: 4,
-//     b: 2
-// };
-
-// const state = {
-//     showSum: true
-// };
-
-// ReactDOM.render(
-//     <ConditionalDisplay isVisible={state.showSum}>
-//         <h1>Conditional Display</h1>
-//     </ConditionalDisplay>,
-//     document.getElementById('root')
-// )
-
-// ReactDOM.render(<Clicker handleClick={(letter) => { console.log(`${letter} clicked`) }} />,
-//     document.getElementById('root'));
-
-// ReactDOM.render(<Sum {...props} />,
-//     document.getElementById('root'));
-
-function onAnswerSelected(answer) {
-  const isCorrect = state.turnData.author.books.some((book) => book === answer);
-  state.highlight = isCorrect ? 'correct' : 'wrong';
-
-  render();
-}
-
-function resetState(){
+function resetState() {
   return {
     turnData: getTurnData(authors),
     highlight: ''
@@ -105,34 +102,28 @@ function resetState(){
 }
 
 function App() {
-  return <AuthorQuiz {...state} 
-      onAnswerSelected={onAnswerSelected}
-      onContinue={() => {
-        state = resetState();
-        render();
-      }} />;
+  return <ReactRedux.Provider store={store}>
+    <AuthorQuiz />
+  </ReactRedux.Provider>
 }
 
 const AuthorWrapper = withRouter(({ history }) => {
-    return <AddAuthorForm onAddAuthor={(author) => {
-      authors.push(author);
-      history.push('/');
-    }} />;
-  }
+  return <AddAuthorForm onAddAuthor={(author) => {
+    authors.push(author);
+    history.push('/');
+  }} />;
+}
 );
 
-function render() {
-  ReactDOM.render(
-    <BrowserRouter>
-      <React.Fragment>
-        <Route exact path='/' component={App} />
-        <Route path='/add' component={AuthorWrapper} />
-      </React.Fragment>
-    </BrowserRouter>,
-    document.getElementById('root'));
-}
+ReactDOM.render(
+  <BrowserRouter>
+    <React.Fragment>
+      <Route exact path='/' component={App} />
+      <Route path='/add' component={AuthorWrapper} />
+    </React.Fragment>
+  </BrowserRouter>,
+  document.getElementById('root'));
 
-render();
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
